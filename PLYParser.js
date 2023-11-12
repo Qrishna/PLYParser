@@ -53,4 +53,8 @@ function parsePlyData(data) {
     return ply_data_object;
 }
 
-module.exports = parsePlyData
+// to ensure compatibility with browser
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+    module.exports = parsePlyData;
+}
+// module.exports = parsePlyData
