@@ -29,7 +29,8 @@ function parsePlyData(data) {
         }
 
         if (isVertices) {
-            if (/^\d+\s+((\d+\s+)+\d+)?$/.test(line)) {
+            // if (/^\d+\s+((\d+\s+)+\d+)?$/.test(line)) {
+            if (/^3\s+\d+(\s+\d+)+$/.test(line)) {
                 const faceVertices = line.split(' ').slice(1).map(Number);
                 faces.push(faceVertices);
             } else {
@@ -44,7 +45,7 @@ function parsePlyData(data) {
         throw new Error('Vertex count does not match the specified counts in the file. ');
     }
     if (faces.length !== expectedFaceCount) {
-        console.log(`Faces count: ${vertices.length}, Expected faces count: ${expectedVertexCount}`);
+        console.log(`Faces count: ${faces.length}, Expected faces count: ${expectedFaceCount}`);
         throw new Error('Face count does not match the specified counts in the file.');
     }
 
