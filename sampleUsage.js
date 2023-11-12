@@ -1,7 +1,8 @@
-const { parsePlyData, readPLYFile } = require('./PLYParser')
-
-const filePath = 'cube.ply'; // Replace with the actual path
-const result = readPLYFile(filePath);
+const fs = require('fs');
+const parsePlyData = require('./PLYParser')
+const filePath = 'cube.ply';
+const data = fs.readFileSync(filePath, 'utf-8');
+const result = parsePlyData(data);
 
 console.log(`Vertices = [${result.vertices}]`)
 console.log(`Faces = [${result.faces}]`)

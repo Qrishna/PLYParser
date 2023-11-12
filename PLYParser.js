@@ -1,5 +1,3 @@
-const fs = require('fs');
-
 
 function parsePlyData(data) {
     const lines = data.split('\n');
@@ -55,12 +53,4 @@ function parsePlyData(data) {
     return ply_data_object;
 }
 
-function readPLYFile(filePath) {
-    const data = fs.readFileSync(filePath, 'utf-8');
-    return parsePlyData(data);
-}
-
-module.exports = {
-    parsePlyData,
-    readPLYFile
-}
+module.exports = parsePlyData

@@ -1,5 +1,6 @@
 const {expect} = require('chai');
-const {parsePlyData, readPLYFile} = require('./PLYParser');
+const parsePlyData = require('./PLYParser');
+const fs = require('fs');
 
 
 describe('PLYParser', () => {
@@ -65,7 +66,8 @@ describe('PLYParser', () => {
 
     it('should read the cube.ply file and parse correctly', () => {
         const filePath = 'cube.ply'; // Replace with the actual path
-        const result = readPLYFile(filePath);
+        const data = fs.readFileSync(filePath, 'utf-8');
+        const result = parsePlyData(data);
 
         expect(result.faces).to.deep.equal([0, 1, 2, 1, 3, 4, 3, 5, 6, 0, 7, 5, 7, 2, 4, 5, 3, 1, 7, 0, 2, 2, 1, 4, 4, 3, 6, 5, 7, 6, 6, 7, 4, 0, 5, 1])
         expect(result.vertices).to.deep.equal([-1, -1, 1, -1, 1, 1, -1, 1, -1, 1, 1, 1, 1, 1, -1, 1, -1, 1, 1, -1, -1, -1, -1, -1])
