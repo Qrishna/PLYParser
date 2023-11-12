@@ -1,0 +1,36 @@
+{
+  "devDependencies": {
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0"
+  },
+  "name": "plyparser",
+  "description": "PLYParser is a javascript library that parses PLY (Polygon File Format) files.",
+  "version": "1.0.0",
+  "main": "PLYParser.js",
+  "dependencies": {
+
+  },
+  "scripts": {
+    "test": "npx mocha PLYParserTest.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Qrishna/PLYParser.git"
+  },
+  "keywords": [
+    "PLY",
+    "Polygon",
+    "File",
+    "Format",
+    "PLY",
+    "Parser",
+    "PLYParser",
+    "PLYParser.js"
+  ],
+  "author": "Krishna Bhattarai",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Qrishna/PLYParser/issues"
+  },
+  "homepage": "https://github.com/Qrishna/PLYParser#readme"
+}
