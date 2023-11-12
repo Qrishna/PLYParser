@@ -19,7 +19,7 @@ const plyParser = require('plyparser');
 ###### Using in the browser
 ```
 // add a script tag 
-<script src="https://unpkg.com/plyparser@3.0.0/PLYParser.js" type="text/javascript"></script>
+<script src="https://unpkg.com/plyparser@latest/PLYParser.js" type="text/javascript"></script>
 ```
 
 
