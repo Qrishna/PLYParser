@@ -6,10 +6,28 @@ It currently considers and extracts:
 - Faces
 
 ###### EXAMPLE USAGE
+
+###### Installing and Using with npm
+```
+npm install plyparser@latest
+
+// Require the package in your code:
+const plyParser = require('plyparser');
+
+```
+
+###### Using in the browser
+```
+// add a script tag 
+<script src="https://unpkg.com/plyparser@3.0.0/PLYParser.js" type="text/javascript"></script>
+```
+
+
 ###### Sample usage can be seen in the file sampleUsage.js
 ```nodejs
 const fs = require('fs');
-const parsePlyData = require('./PLYParser')
+// const parsePlyData = require('./PLYParser')
+const parsePlyData = require('plyparser')
 const filePath = 'cube.ply';
 const data = fs.readFileSync(filePath, 'utf-8');
 const result = parsePlyData(data);
