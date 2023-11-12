@@ -1,6 +1,9 @@
 #### PLYParser
 PLYParser is a javascript library that parses PLY (Polygon File Format) files. 
 
+It currently considers and extracts:
+- Vertices
+- Faces
 
 ###### EXAMPLE USAGE
 ###### Sample usage can be seen in the file sampleUsage.js
