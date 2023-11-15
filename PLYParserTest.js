@@ -4,7 +4,7 @@ const fs = require('fs');
 
 
 describe('PLYParser', () => {
-    it('should parse PLY data with only vertices', () => {
+    it('should parse PLY data with vertices and faces', () => {
         const data = `ply
 format ascii 1.0
 comment Some comment
@@ -50,6 +50,61 @@ end_header
         expect(result.faces).to.have.lengthOf(1);
         expect(result.colors).to.have.lengthOf(3);
     });
+
+     it('should correctly distinguish and count lines that represent vertices and faces', () => {
+        const data = `ply
+format ascii 1.0
+element vertex 3
+property float x
+property float y
+property float z
+element face 3
+property list uchar int vertex_indices
+end_header
+1.0 2.0 3.0
+4.0 5.0 6.0
+7.0 8.0 9.0
+3 2 1 2
+3 2 2 3
+3 1 2 3
+`;
+
+        const result = parsePlyData(data);
+        expect(result.vertices).to.have.lengthOf(3);
+        expect(result.vertices).to.deep.equal([ [ 1, 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9 ] ])
+
+        expect(result.faces).to.have.lengthOf(3);
+        expect(result.faces).to.deep.equal([ [ 2, 1, 2 ], [ 2, 2, 3 ], [ 1, 2, 3 ] ])
+
+        expect(result.colors).to.have.lengthOf(0);
+    });
+    it('should correctly distinguish and handle face lines that start with 4', () => {
+            const data = `ply
+    format ascii 1.0
+    element vertex 3
+    property float x
+    property float y
+    property float z
+    element face 3
+    property list uchar int vertex_indices
+    end_header
+    1.0 2.0 3.0
+    4.0 5.0 6.0
+    7.0 8.0 9.0
+    4 2 1 2 2
+    4 2 2 3 1
+    4 1 2 3 2
+    `;
+
+        const result = parsePlyData(data);
+        expect(result.vertices).to.have.lengthOf(3);
+        expect(result.vertices).to.deep.equal([ [ 1, 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9 ] ])
+
+        expect(result.faces).to.have.lengthOf(3);
+        expect(result.faces).to.deep.equal([ [ 2, 1, 2, 2 ], [ 2, 2, 3, 1 ], [ 1, 2, 3, 2] ])
+
+        expect(result.colors).to.have.lengthOf(0);
+        });
 
 
     it('should parse PLY data with no vertices or faces', () => {
