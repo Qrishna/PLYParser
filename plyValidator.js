@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 // const parsePlyData = require('plyparser');
 const parsePlyData = require('./PLYParser')
-const directoryPath = '3ddata';
+const directoryPath = '.';
 
 fs.readdir(directoryPath, (err, files) => {
   if (err) {
@@ -17,10 +17,13 @@ fs.readdir(directoryPath, (err, files) => {
       console.log(`File: ${file}`);
       const result = parsePlyData(data);
 
-      // console.log(`Vertices = [${result.vertices}]`);
-      // console.log(`Faces = [${result.faces}]`);
+      // console.log("vertices", result.vertices)
+      // console.log("faces", result.faces)
+      // console.log("colors", result.colors)
+
       console.log(`Vertices Length = ${result.vertices.length}`);
       console.log(`Faces Length = ${result.faces.length}`);
+      console.log(`Colors Length = ${result.colors.length}`);
       console.log('\n');
     }
   });

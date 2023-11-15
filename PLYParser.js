@@ -1,61 +1,111 @@
-
 function parsePlyData(data) {
     const lines = data.split('\n');
+
+    let expectedFaces = null;
+    let expectedVertices = null;
+
     const vertices = [];
     const faces = [];
-    const ply_data_object = {};
+    const colors = [];
 
-    let isVertices = false;
+    let vertexCount = 0;
+    let facesCount = 0;
 
-    let expectedVertexCount = 0;
-    let expectedFaceCount = 0;
+    let property_red = 0
+    let property_blue = 0
+    let property_green = 0
 
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
+    for (let x = 0; x < lines.length; x++) {
+        const line = lines[x].trim();
 
-        if (line === 'end_header') {
-            isVertices = true;
+        if (!line || line === '') {
             continue;
         }
-        // Skip empty lines
-        if (line === '') {
-            continue;
-        }
-        // Check for element vertex and element face lines
-        if (line.startsWith('element vertex')) {
-            expectedVertexCount = parseInt(line.split(' ')[2]);
-        } else if (line.startsWith('element face')) {
-            expectedFaceCount = parseInt(line.split(' ')[2]);
+
+        if (line.startsWith("format")) {
+            const fileFormat = line.trim().split(' ')[1];
+            if (fileFormat.toLowerCase() !== "ascii") {
+                console.log(`File format is not ascii! It is: ${fileFormat}`);
+                throw new Error(`File format is not ascii! It is: ${fileFormat}`);
+            }
         }
 
-        if (isVertices) {
-            // if (/^\d+\s+((\d+\s+)+\d+)?$/.test(line)) {
-            if (/^3\s+\d+(\s+\d+)+$/.test(line)) {
-                const faceVertices = line.split(' ').slice(1).map(Number);
-                faces.push(faceVertices);
+        if (line.startsWith("comment")) {
+            continue;
+        }
+
+        if (line.includes("element vertex")) {
+            expectedVertices = parseInt(line.match(/^element\s+vertex\s+(\d+)/)[1]);
+            continue
+        }
+
+        if (line.includes("property uchar red")) {
+            property_red = 1
+            continue
+        }
+        if (line.includes("property uchar green")) {
+            property_green = 1
+            continue
+        }
+        if (line.includes("property uchar blue")) {
+            property_blue = 1
+            continue
+        }
+        if (line.includes("element face")) {
+            expectedFaces = parseInt(line.match(/^element\s+face\s+(\d+)/)[1]);
+        }
+
+        if (line.includes("end_header")) {
+            continue;
+        }
+
+        if (line.match(/^([-|\d]+(\.\d+)?)\s+([-|\d]+(\.\d+)?)\s+([-|\d]+(\.\d+)?)/) && vertexCount !== expectedVertices) {
+            vertexCount += 1;
+
+            if ((property_red === 1) && (property_green === 1) && (property_blue === 1)) {
+                const vertex = line.trim().split(/\s+/).slice(0, 6)
+                vertices.push([parseFloat(vertex[0]), parseFloat(vertex[1]), parseFloat(vertex[2])]);
+                colors.push([parseFloat(vertex[3]), parseFloat(vertex[4]), parseFloat(vertex[5])]);
+
             } else {
-                const vertex = line.split(' ').map(Number);
-                vertices.push(vertex);
+                const vertex = line.trim().split(/\s+/).slice(0, 3)
+                vertices.push([parseFloat(vertex[0]), parseFloat(vertex[1]), parseFloat(vertex[2])]);
+            }
+
+        }
+
+        if (line.match(/^[34]\s+\d+\s+\d+\s\d+/) && facesCount !== expectedFaces) {
+            facesCount += 1;
+
+            if (line[0].startsWith('3')) {
+                const face = line.trim().split(/\s+/).slice(1, 4)
+                faces.push([parseInt(face[0]), parseInt(face[1]), parseInt(face[2])]);
+            } else if (line[0].startsWith('4')) {
+                const face = line.trim().split(/\s+/).slice(1, 5)
+                faces.push([parseInt(face[0]), parseInt(face[1]), parseInt(face[2]), parseInt(face[3])]);
             }
         }
     }
-    // Validate vertex and face counts
-    if (vertices.length !== expectedVertexCount) {
-        console.log(`Vertices count: ${vertices.length}, Expected vertices count: ${expectedVertexCount}`);
-        throw new Error('Vertex count does not match the specified counts in the file. ');
-    }
-    if (faces.length !== expectedFaceCount) {
-        console.log(`Faces count: ${faces.length}, Expected faces count: ${expectedFaceCount}`);
-        throw new Error('Face count does not match the specified counts in the file.');
+
+    if (vertices.length !== expectedVertices) {
+        console.log(`Error: total vertices read: ${vertices.length} does not match expected vertices: ${expectedVertices}`);
+        throw new Error(`Error: total vertices read: ${vertices.length} does not match expected vertices: ${expectedVertices}`);
     }
 
-    ply_data_object.vertices = vertices.flat();
-    ply_data_object.faces = faces.flat();
+    if (faces.length !== expectedFaces) {
+        console.log(`Error: total faces read: ${faces.length} does not match expected faces: ${expectedFaces}`);
+        throw new Error(`Error: total faces read: ${faces.length} does not match expected faces: ${expectedFaces}`);
+    }
+
+    // const name = path.basename(filename);
+    let ply_data_object = {}
+    ply_data_object.vertices = vertices
+    ply_data_object.faces = faces
+    ply_data_object.colors = colors
+
     return ply_data_object;
 }
 
-// to ensure compatibility with browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
     module.exports = parsePlyData;
 }
-// module.exports = parsePlyData
